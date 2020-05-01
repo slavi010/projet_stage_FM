@@ -27,7 +27,7 @@ import matplotlib
 
 import warnings
 
-from src.Utils import *
+from Utils import *
 
 warnings.filterwarnings('ignore')
 
@@ -126,9 +126,11 @@ datagen = ImageDataGenerator(rotation_range=30,width_shift_range=0.2,height_shif
 datagen.fit(x_train)
 
 
+print("Entrainement en cours...")
 # trainning process
 nb_epoch = 5
 batch_size = 128
+print("nb_epoch = %d, batch_size = %d" % (nb_epoch, batch_size))
 #checkpointer = ModelCheckpoint('imagenet', verbose=1, monitor='val_acc',save_best_only=True, save_weights_only=True)
 fitted_model2 = model.fit_generator(
     datagen.flow(x_train, y_train, batch_size=batch_size),
@@ -136,7 +138,7 @@ fitted_model2 = model.fit_generator(
     epochs=nb_epoch,
     validation_data = (x_val, y_val),
 )
-
+print("Entrainement fini !")
 
 
 
