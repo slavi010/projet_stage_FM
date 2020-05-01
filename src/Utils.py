@@ -1,13 +1,32 @@
 import os
 
 from keras import Model
-from keras.applications import ResNet152
+from keras.applications import ResNet152, ResNet50V2
 import requests
 from keras.layers import AvgPool2D, Dropout, Dense, Flatten
 
 
 def build_ResNet152(input_tensor_shape):
     base_model = ResNet152(weights='imagenet', include_top=False, input_shape=input_tensor_shape)
+
+    x_model = base_model.output
+
+    x_model = AvgPool2D(name='globalaveragepooling2d')(x_model)
+
+    x_model = Dense(1024, activation='relu', name='fc1_Dense')(x_model)
+    x_model = Dropout(0.5, name='dropout_1')(x_model)
+    x_model = Flatten()(x_model)
+    x_model = Dense(256, activation='relu', name='fc2_Dense')(x_model)
+    x_model = Dropout(0.5, name='dropout_2')(x_model)
+
+    predictions = Dense(3, activation='sigmoid', name='output_layer')(x_model)
+
+    model = Model(inputs=base_model.input, outputs=predictions)
+
+    return model
+
+def build_ResNet50(input_tensor_shape):
+    base_model = ResNet50V2(weights='imagenet', include_top=False, input_shape=input_tensor_shape)
 
     x_model = base_model.output
 
